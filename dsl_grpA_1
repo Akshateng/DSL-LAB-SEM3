@@ -4,7 +4,6 @@ b) List of students who play either cricket or badminton but not both c) Number 
 d) Number of students who play cricket and football but not badminton.
 (Note- While realizing the group, duplicate entries should be avoided, Do not use SET built-in functions)
 '''
-
 def removeDuplicate(d):
     lst=[]
     for i in d:
@@ -12,7 +11,24 @@ def removeDuplicate(d):
             lst.append(i)
     return lst
 
-
+inter=[]
+def intersection(l1,l2):
+	for i in l1:
+		if i in l2:
+			inter.append(i)
+	return inter
+uni=[]
+def union(l1,l2):
+	for i in l2:
+		if i not in uni:
+			uni.append(i)
+	return uni
+diff=[]
+def differnce(l1,l2):
+	for i in l1:
+		if i not in l2:
+			diff.append(i)
+	return diff
 Cricket = []
 n = int(input("\n\nEnter number of students who play cricket : "))
 for i in range(0, n):
@@ -39,7 +55,7 @@ Badminton = []
 n = int(input("\n\nEnter number of students who play badminton : "))
 for i in range(0, n):
     m = int(input("Enter the roll numbers of students " + str(i+1) + " "  ))
-    Cricket.append(m) 
+    Badminton.append(m) 
 print("Original list of students playing badminton :" +str(Badminton))
 Badminton=removeDuplicate(Badminton)
 print("The list of students playing badminton after removing duplicates : " +str(Badminton))
@@ -59,7 +75,7 @@ while flag==1:
     ch=int(input("Enter your Choice (from 1 to 5) :"))
 
     if ch==1:
-        print("Number of students who play both cricket and badminton : ", CB(Cricket,Badminton))
+        print("Number of students who play both cricket and badminton : ", intersection(Cricket,Badminton))
         a = input("\n\nDo you want to continue (yes/no) :")
         if a == "yes":
             flag = 1
@@ -68,7 +84,9 @@ while flag==1:
             print("Thanks for using this program!")
 
     elif ch==2:
-        print("Number of students who play either cricket or badminton but not both : ", eCeB(Cricket, Badminton))
+        union(Cricket, Badminton)
+        intersection(Cricket,Badminton)
+        print("Number of students who play either cricket or badminton but not both : ", differnce(uni,inter))
         a = input("\n\nDo you want to continue (yes/no) :")
         if a == "yes":
             flag = 1
@@ -77,7 +95,7 @@ while flag==1:
             print("Thanks for using this program!")
 
     elif ch==3:
-        print("Number of students who play neither cricket nor badminton : ", nCnB(SEComp,Cricket,Badminton))
+        print("Number of students who play neither cricket nor badminton : ",)
         a = input("\n\nDo you want to continue (yes/no) :")
         if a == "yes":
             flag = 1
@@ -106,3 +124,9 @@ while flag==1:
         else:
             flag=0
             print("Thanks for using this program!")
+            
+
+
+
+			
+
