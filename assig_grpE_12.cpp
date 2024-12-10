@@ -4,154 +4,171 @@ representation mapping a deque into a one-dimensional array. Write C++ program t
 and delete elements from either end of the deque. 
 */
 
-#include<iostream>
-#include<stdio.h>
-#define MAX 10
+#include <iostream>
 using namespace std;
 
-struct que
-{
-    int arr[MAX];
-    int front,rear;
-};
+class Deque {
+private:
+    int *arr;
+    int front, rear, size, capacity;
 
-void init(struct que *q)
-{
-    q->front=-1;
-    q->rear=-1;
-}
-
-void print(struct que q)
-{
-    int i;
-    i=q.front;
-    while(i!=q.rear)
-    {
-        cout<<"\t"<<q.arr[i];
-        i=(i+1)%MAX;
+public:
+    // Constructor to initialize deque with given capacity
+    Deque(int cap) {
+        capacity = cap;
+        arr = new int[capacity];
+        front = -1;
+        rear = -1;
+        size = 0;
     }
-    cout<<"\t"<<q.arr[q.rear];
-}
 
-int isempty(struct que q)
-{
-    return q.rear==-1?1:0;
-}
-
-int isfull(struct que q)
-{
-    return (q.rear+1)%MAX==q.front?1:0;
-}
-
-void addf(struct que *q,int data)
-{
-    if(isempty(*q))
-    {
-        q->front=q->rear=0;
-        q->arr[q->front]=data;
+    // Destructor to free allocated memory
+    ~Deque() {
+        delete[] arr;
     }
-    else
-    {
-        q->front=(q->front-1+MAX)%MAX;
-        q->arr[q->front]=data;
+
+    // Check if the deque is empty
+    bool isEmpty() {
+        return size == 0;
     }
-}
 
-void addr(struct que *q,int data)
-{
-    if(isempty(*q))
-    {
-        q->front=q->rear=0;
-        q->arr[q->rear]=data;
+    // Check if the deque is full
+    bool isFull() {
+        return size == capacity;
     }
-    else
-    {
-        q->rear=(q->rear+1)%MAX;
-        q->arr[q->rear]=data;
+
+    // Add an element to the front of the deque
+    void addFront(int value) {
+        if (isFull()) {
+            cout << "Deque is full, cannot add to front!" << endl;
+            return;
+        }
+
+        if (front == -1) { // If deque is empty, set both front and rear to 0
+            front = rear = 0;
+        } else {
+            // Move front pointer to the previous position (circular)
+            front = (front - 1 + capacity) % capacity;
+        }
+
+        arr[front] = value;
+        size++;
     }
-}
 
-int delf(struct que *q)
-{
-    int data1;
-    data1=q->arr[q->front];
-    if(q->front==q->rear)
-        init(q);
-    else
-        q->front=(q->front+1)%MAX;
-    return data1;
-}
+    // Add an element to the rear of the deque
+    void addRear(int value) {
+        if (isFull()) {
+            cout << "Deque is full, cannot add to rear!" << endl;
+            return;
+        }
 
-int delr(struct que *q)
-{
-    int data1;
-    data1=q->arr[q->rear];
-    if(q->front==q->rear)
-        init(q);
-    else
-        q->rear=(q->rear-1+MAX)%MAX;
-    return data1;
-}
+        if (rear == -1) { // If deque is empty, set both front and rear to 0
+            front = rear = 0;
+        } else {
+            // Move rear pointer to the next position (circular)
+            rear = (rear + 1) % capacity;
+        }
 
-int main()
-{
-    struct que q;
-    int data,ch;
-    init(&q);
-    while(ch!=6)
-    {
-        cout<<"\t\n1.Insert front"
-                "\t\n2.Insert rear"
-                "\t\n3.Delete front"
-                "\t\n4.Delete rear"
-                "\t\n5.Print"
-                "\t\n6.Exit";
-         cout<<"\nEnter your choice : ";
-        cin>>ch;
-        switch(ch)
-        {
-           case 1:
-              cout<<"\nEnter data to insert front : ";
-              cin>>data;
-              addf(&q,data);
-              break;
+        arr[rear] = value;
+        size++;
+    }
 
-           case 2:
-               cout<<"\nEnter the data to insert rear : ";
-               cin>>data;
-               addr(&q,data);
-               break;
+    // Remove an element from the front of the deque
+    void deleteFront() {
+        if (isEmpty()) {
+            cout << "Deque is empty, cannot delete from front!" << endl;
+            return;
+        }
 
-           case 3:
-               if(isempty(q))
-                   cout<<"\nDequeue is empty!!!";
-               else
-               {
-                   data=delf(&q);
-                   cout<<"\nDeleted data is : "<<data;
-               }
-               break;
+        // Move front pointer to the next position (circular)
+        front = (front + 1) % capacity;
+        size--;
 
-           case 4:
-               if(isempty(q))
-                   cout<<"\nDequeue is empty!!!";
-               else
-               {
-                   data=delr(&q);
-                   cout<<"\nDeleted data is : "<<data;
-               }
-               break;
-
-           case 5:
-                if(isempty(q))
-                    cout<<"\nDequeue is empty!!!";
-                else
-                {
-                    cout<<"\nDequeue elements are : ";
-                    print(q);
-                }
-                break;
+        if (size == 0) { // If deque becomes empty, reset front and rear
+            front = rear = -1;
         }
     }
+
+    // Remove an element from the rear of the deque
+    void deleteRear() {
+        if (isEmpty()) {
+            cout << "Deque is empty, cannot delete from rear!" << endl;
+            return;
+        }
+
+        // Move rear pointer to the previous position (circular)
+        rear = (rear - 1 + capacity) % capacity;
+        size--;
+
+        if (size == 0) { // If deque becomes empty, reset front and rear
+            front = rear = -1;
+        }
+    }
+
+    // Display elements of the deque
+    void display() {
+        if (isEmpty()) {
+            cout << "Deque is empty!" << endl;
+            return;
+        }
+
+        int i = front;
+        cout << "Deque elements: ";
+        for (int j = 0; j < size; j++) {
+            cout << arr[i] << " ";
+            i = (i + 1) % capacity; // Move to the next index (circular)
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    int capacity;
+    cout << "Enter the capacity of the deque: ";
+    cin >> capacity;
+
+    Deque dq(capacity);
+
+    int choice, value;
+
+    do {
+        cout << "\nDeque Menu:\n";
+        cout << "1. Add element to front\n";
+        cout << "2. Add element to rear\n";
+        cout << "3. Remove element from front\n";
+        cout << "4. Remove element from rear\n";
+        cout << "5. Display deque\n";
+        cout << "6. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter value to add to front: ";
+                cin >> value;
+                dq.addFront(value);
+                break;
+            case 2:
+                cout << "Enter value to add to rear: ";
+                cin >> value;
+                dq.addRear(value);
+                break;
+            case 3:
+                dq.deleteFront();
+                break;
+            case 4:
+                dq.deleteRear();
+                break;
+            case 5:
+                dq.display();
+                break;
+            case 6:
+                cout << "Exiting program.\n";
+                break;
+            default:
+                cout << "Invalid choice! Please try again.\n";
+        }
+    } while (choice != 6);
+
     return 0;
 }
